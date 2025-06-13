@@ -1,4 +1,5 @@
 
+
 import csv
 from datetime import datetime
 from collections import defaultdict
@@ -21,10 +22,27 @@ def view_expenses():
     try:
         with open(CSV_FILE, mode='r') as file:
             reader = csv.reader(file)
-            for row in reader:
-                print(row)
+            expenses = list(reader)
+
+            if not expenses:
+                print("No expenses recorded yet.")
+                return
+
+            for idx, row in enumerate(expenses, start=1):
+                if len(row) >= 3:
+                    date = row[0]
+                    category = row[1]
+                    amount = row[2]
+                    note = row[3] if len(row) > 3 else "—"
+                    print(f"{idx}. Date: {date} | Category: {category} | Amount: ₹{amount} | Note: {note}")
+                else:
+                    print(f"{idx}. Incomplete data: {row}")
     except FileNotFoundError:
-        print("No expenses found.")
+        print("expenses.csv not found. Add an expense first.")
+    except Exception as e:
+        print(f"Error while reading expenses: {e}")
+
+
 
 def filter_expenses():
     filter_by = input("Filter by 'date' or 'category': ").strip().lower()
@@ -47,9 +65,11 @@ def summarize_expenses():
         with open(CSV_FILE, mode='r') as file:
             reader = csv.reader(file)
             for row in reader:
-                summary[row[1]] += float(row[2])
+                category = row[1].strip().lower()
+                amount = float(row[2])
+                summary[category] += amount
         print("\n--- Expense Summary by Category ---")
         for category, total in summary.items():
-            print(f"{category}: ₹{total}")
+            print(f"{category.capitalize()}: ₹{total}")
     except FileNotFoundError:
         print("No expenses found.")
