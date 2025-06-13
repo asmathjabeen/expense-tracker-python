@@ -11,7 +11,11 @@ def menu():
         print("4. View Summary")
         print("5. Exit")
 
-        choice = input("Choose an option: ")
+        choice = input("Choose an option: ").strip()
+
+        if not choice:
+            print("Invalid choice. Try again.")
+            continue
 
         if choice == '1':
             add_expense()
@@ -29,3 +33,4 @@ def menu():
 
 if __name__ == "__main__":
     menu()
+
